@@ -1,0 +1,3 @@
+FROM {{{configuration.image}}}
+RUN wget https://raw.githubusercontent.com/cryon-io/ami/master/install.sh -O /tmp/install.sh && sh /tmp/install.sh
+WORKDIR /app

@@ -1,0 +1,5 @@
+FROM docker.io/library/ubuntu:latest
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y systemd wget curl && rm -rf /var/lib/apt/lists/*
+RUN wget https://raw.githubusercontent.com/cryon-io/ami/master/install.sh -O install.sh && sh install.sh
+WORKDIR /app

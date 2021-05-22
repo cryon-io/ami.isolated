@@ -1,0 +1,22 @@
+[Unit]
+Description={{{ID}}} service
+After=network.target
+
+[Service]
+User={{{USER}}}
+Group={{{USER}}}
+
+Type=simple
+Restart=always
+
+ExecStartPre=/usr/bin/rm -f /%T/%n-cid
+ExecStart=podman run --rm --cidfile %T/%n-cid --mount "type=bind,src={{{model.DATA_DIR}}},target=/app" {{{model.STARTUP_ARGS__CLI_ARGS}}} --name {{{ID}}}_isolated ami_isolate_{{{ID}}} {{{model.ENTRYPOINT}}}
+ExecStop=/usr/bin/sh -c "/usr/bin/podman stop `cat /%T/%n-cid`"
+KillMode=none
+
+{{#model.SERVICE_CONFIGURATION__ARRAY}}
+{{{key}}}={{{value}}}
+{{/model.SERVICE_CONFIGURATION__ARRAY}}
+
+[Install]
+WantedBy=multi-user.target
