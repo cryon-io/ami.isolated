@@ -4,8 +4,6 @@ end
 
 local _entry = am.app.get_config("entrypoint", "/lib/systemd/systemd")
 
-_additionalLibs = {}
-
 local _args = am.app.get_config("STARTUP_ARGS", {})
 local _addr = am.app.get_config("OUTBOUND_ADDR")
 if type(_addr) == "string"  then 

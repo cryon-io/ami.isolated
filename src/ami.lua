@@ -16,10 +16,27 @@ local function _pass_to_nested_app()
     local _appId = am.app.get("id") .. "_isolated"
     local _user = am.app.get("user", "root")
     local _args = {}
+	local _patternsToIgnore = {
+		"^%-%-local%-sources=",
+		"^%-local%-sources=",
+		"^%-%-ls=",
+		"^%-ls=",
+		"^%-%-path=",
+		"^%-path=",
+		"^%-%-p=",
+		"^%-p=",
+	}
     for _, _arg in ipairs(am.get_proc_args()) do
-        if type(_arg) == "string" and not _arg:match("^%-%-local%-sources=") and _arg ~= "pass" then
-            table.insert(_args, _arg)
-        end
+		-- skip non string args and pass arg
+		if type(_arg) ~= "string" or _arg == "pass" then goto CONTINUE end
+
+		-- skip local-sources and path arg
+		for _, _pattern in ipairs(_patternsToIgnore) do
+			if _arg:match(_pattern) then goto CONTINUE end
+		end
+      
+		table.insert(_args, _arg)
+		::CONTINUE::
     end
     _podman.exec(_appId, string.join_strings(" ", "ami", table.unpack(_args)), {runas = _user, stdPassthrough = true })
 end
