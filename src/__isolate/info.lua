@@ -15,16 +15,7 @@ local _info = {
 }
 
 if _info.isolated_app == "running" then
-    local _ok, _podman = am.plugin.safe_get("podman")
-    ami_assert(_ok, "Failed to load podman plugin - " .. tostring(_podman), EXIT_PLUGIN_LOAD_ERROR)
-    local _user = am.app.get("user", "root")
-    local _args = {}
-    for _, _arg in ipairs(am.get_proc_args()) do
-        if type(_arg) == "string" and not _arg:match("^%-%-local%-sources=") then
-            table.insert(_args, _arg)
-        end
-    end
-    _podman.exec(_appId .. "_isolated", string.join_strings(" ", "ami", table.unpack(_args)), {runas = _user, stdPassthrough = true })
+    am.execute("pass")
 else
     _info.level = "error"
     if _json then
