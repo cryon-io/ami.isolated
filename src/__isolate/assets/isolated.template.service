@@ -1,13 +1,16 @@
 [Unit]
 Description={{{ID}}} service
 After=network.target
+StartLimitIntervalSec=0
 
 [Service]
 User={{{USER}}}
 Group={{{USER}}}
+AmbientCapabilities=CAP_NET_BIND_SERVICE
 
 Type=simple
 Restart=always
+RestartSec=1
 
 ExecStartPre=/usr/bin/rm -f /%T/%n-cid
 ExecStart=podman run --rm --cidfile %T/%n-cid --mount "type=bind,src={{{model.DATA_DIR}}},target=/app" {{{model.STARTUP_ARGS__CLI_ARGS}}} --name {{{ID}}}_isolated ami_isolate_{{{ID}}} {{{model.ENTRYPOINT}}}
