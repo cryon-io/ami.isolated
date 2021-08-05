@@ -13,7 +13,7 @@ end
 
 local _unprivilegedPortStart = am.app.get_configuration("UNPRIVILEGED_PORT_START")
 if _user ~= "root" and type(_unprivilegedPortStart) == "string" or type(_unprivilegedPortStart) == "number" then 
-	_trace("Non root user with custom UNPRIVILEGED_PORT_START. Setting net.ipv4.ip_unprivileged_port_start...")
+	log_trace("Non root user with custom UNPRIVILEGED_PORT_START. Setting net.ipv4.ip_unprivileged_port_start...")
 	local _sysctl = am.plugin.get("sysctl")
 	local _ok, _port = _sysctl.safe_get("net.ipv4.ip_unprivileged_port_start")
 	ami_assert(_ok, "Failed to determine net.ipv4.ip_unprivileged_port_start. Can not configure UNPRIVILEGED_PORT_START!")
