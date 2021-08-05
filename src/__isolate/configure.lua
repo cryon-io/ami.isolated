@@ -17,7 +17,7 @@ if _user ~= "root" and type(_unprivilegedPortStart) == "string" or type(_unprivi
 	local _sysctl = am.plugin.get("sysctl")
 	local _ok, _port = _sysctl.safe_get("net.ipv4.ip_unprivileged_port_start")
 	ami_assert(_ok, "Failed to determine net.ipv4.ip_unprivileged_port_start. Can not configure UNPRIVILEGED_PORT_START!")
-	if tonumber(_port) >= tonumber(_unprivilegedPortStart) then 
+	if tonumber(_port) <= tonumber(_unprivilegedPortStart) then 
 		log_info("UNPRIVILEGED_PORT_START (net.ipv4.ip_unprivileged_port_start) already configured to required value.")
 	else
 		local _ok = _sysctl.safe_set("net.ipv4.ip_unprivileged_port_start", _unprivilegedPortStart)
