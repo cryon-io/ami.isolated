@@ -114,6 +114,11 @@ local _commands = {
     },
     remove = {
         index = 7,
+		options = {
+			all = {
+				description = "Removes entire application!"
+			}
+		},
         action = function(_options, _, _, _cli)
             if _options.all then
                 am.app.remove()

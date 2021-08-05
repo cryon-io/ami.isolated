@@ -71,7 +71,9 @@ ami_assert(_ok, "Failed to write isolated app.hjson - " .. (_error or "") .. "!"
 local _ok, _error = fs.safe_chown(am.app.get_model("DATA_DIR"), _uid, _uid, { recurse = true })
 assert(_ok, "Failed to chown data directory - " .. (_error or "") .. "!")
 
-local _ok = _podman.run(_imageId, "ami setup", {runas = _user, container = _appId .. "_tmp", args = "-it --mount 'type=bind,src=" .. am.app.get_model("DATA_DIR") .. ",target=/app'", useOsExec = true})
+
+_podman.raw_exec("rm -f " .. _appId .. "_tmp", { runas = _user })
+local _ok = _podman.run(_imageId, "ami setup", { runas = _user, container = _appId .. "_tmp", args = "-it --mount 'type=bind,src=" .. am.app.get_model("DATA_DIR") .. ",target=/app'", useOsExec = true })
 assert(_ok, "Failed to setup isolated app!")
 local _result = _podman.raw_exec("commit " ..  _appId .. "_tmp ami_isolate_" .. _appId, { runas = _user })
 assert(_result.exitcode == 0, "Failed to create isolated app container image!")
