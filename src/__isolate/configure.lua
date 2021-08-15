@@ -46,7 +46,9 @@ _podman.install() -- setup podman
 
 local _imageId = "ami_isolate_" .. _appId .. "_tmp"
 local _ok, _error = fs.safe_chown("__isolate/assets/recipes", _uid, _uid, { recurse = true })
-ami_assert(_ok, "Failed to chown __isolate/assets/recipes - " .. (_error or ""))
+if not _ok then
+    ami_error("Failed to chown __isolate/assets/recipes - " .. (_error or ""))
+end
 
 -- remove preexisting image
 _podman.raw_exec("image rm -f ami_isolate_" .. _appId, { runas = _user })
@@ -84,7 +86,9 @@ local _ok, _error = fs.safe_write_file(path.combine(am.app.get_model("DATA_DIR")
 ami_assert(_ok, "Failed to write isolated app.hjson - " .. (_error or "") .. "!")
 
 local _ok, _error = fs.safe_chown(am.app.get_model("DATA_DIR"), _uid, _uid, { recurse = true })
-assert(_ok, "Failed to chown data directory - " .. (_error or "") .. "!")
+if not _ok then
+    ami_error("Failed to chown data directory - " .. (_error or "") .. "!")
+end
 
 _podman.raw_exec("rm -f " .. _appId .. "_tmp", { runas = _user })
 local _ok = _podman.run(_imageId, "ami setup", { runas = _user, container = _appId .. "_tmp", args = "-it --mount 'type=bind,src=" .. am.app.get_model("DATA_DIR") .. ",target=/app'", useOsExec = true })
